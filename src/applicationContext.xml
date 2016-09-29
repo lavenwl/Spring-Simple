@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context-2.5.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+	default-lazy-init="false"
+	>
+
+	
+	<bean id="oneAction" class="com.laven.action.OneAction"></bean>
+	<bean id="twoAction" class="com.laven.action.TwoAction"></bean>
+	<bean id="test" class="com.laven.action.Test">
+		<property name="action" ref="oneAction"></property>
+	</bean>
+	
+	<bean id="mybean" 
+		  lazy-init="true" 
+		  scope="singleton" 
+		  init-method="myinit"
+		  destroy-method="mydestroy"
+		  class="com.laven.demo.MyBean"></bean>
+	<bean id="collectionbean" class="com.laven.demo.CollectionBean">
+	<property name="city">
+		<list>
+			<value>beijing</value>
+			<value>shanghai</value>
+			<value>shenzhen</value>
+		</list>
+	</property>
+	<property name="name">
+		<set>
+			<value>tom</value>
+			<value>laven</value>
+			<value>jean</value>
+		</set>
+	</property>
+	<property name="books">
+		<map>
+			<entry key="111" value="struts"></entry>
+			<entry key="222" value="hibernate"></entry>
+			<entry key="333" value="spring"></entry>
+		</map>
+	</property>
+	<property name="params">
+		<props>
+			<prop key="username">root</prop>
+			<prop key="password">root</prop>
+			<prop key="driverClass">com.mysql.jdbc.Driver</prop>
+			<prop key="url">jdbc:mysql://localhost:3306/test</prop>
+		</props>
+	</property>
+	</bean>
+	<bean id="userService" class="com.laven.aop.UserServiceImpl"></bean>
+	<bean id="optLogger" class="com.laven.aop.OptLogger" ></bean>
+	<aop:config>
+		<aop:pointcut id="servicepointcut" expression="execution(* com.laven.aop.*.*(..))" />
+		<aop:aspect id="loggeraspect" ref="optLogger">
+			<aop:before method="mybefore" pointcut-ref="servicepointcut" />
+			<aop:after-returning method="myafterReturning" returning="retVal" pointcut-ref="servicepointcut" />
+			<aop:around method="logger2" pointcut-ref="servicepointcut" />
+			<aop:after-throwing method="myafterException" throwing="e" pointcut-ref="servicepointcut" />
+			<aop:after method="myafter" pointcut-ref="servicepointcut" />
+		</aop:aspect>
+	</aop:config>
+	
+	
+</beans>
